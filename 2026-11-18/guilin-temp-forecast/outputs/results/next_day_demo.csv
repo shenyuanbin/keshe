@@ -1,0 +1,6 @@
+﻿model,label,pred_tmax_c
+persistence,持久性基线,20.8
+linear_regression,线性回归,20.14
+random_forest,随机森林,20.0
+gradient_boosting,梯度提升树,19.77
+official_forecast,Open-Meteo 数值预报（对照）,15.7

@@ -1,0 +1,169 @@
+{
+  "run_time": "2026-11-18T20:04:31",
+  "seed": 42,
+  "python": "3.13.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "packages": {
+    "numpy": "2.5.5",
+    "pandas": "3.1.1",
+    "scikit-learn": "1.9.1",
+    "matplotlib": "3.11.2"
+  },
+  "data_source": {
+    "provider": "Open-Meteo ERA5 再分析（历史归档接口）",
+    "url": "https://archive-api.open-meteo.com/v1/archive?latitude=25.333&longitude=110.3&start_date=1951-01-01",
+    "location": "桂林 25.333°N, 110.3°E",
+    "fields": "temperature_2m_max / temperature_2m_min / precipitation_sum（°C / mm）",
+    "cache": "work\\raw\\open-meteo_guilin_era5_daily.csv",
+    "note": "ERA5 为模式再分析值（经观测校正），非站点温度计直接读数；数据自动更新至昨天"
+  },
+  "task": "用 t 日及以前的信息预测 t+1 日 TMAX（摄氏度）",
+  "features": {
+    "lag1": "t 日最高气温（TMAX_t）",
+    "lag3": "t-2 日最高气温（TMAX_t-2）",
+    "lag7": "t-6 日最高气温（TMAX_t-6）",
+    "month": "t+1 日所在月份（日历，已知）",
+    "doy": "t+1 日年内日序 1-366（日历，已知）",
+    "doy_sin": "sin(2π·doy/365.25)（日历，已知）",
+    "doy_cos": "cos(2π·doy/365.25)（日历，已知）"
+  },
+  "split": {
+    "train": [
+      "1951-01-01",
+      "2004-02-11",
+      19400
+    ],
+    "val": [
+      "2004-02-12",
+      "2015-06-30",
+      4157
+    ],
+    "test": [
+      "2015-07-01",
+      "2026-11-17",
+      4158
+    ]
+  },
+  "data_cached": true,
+  "data_prepare_seconds": 0.01,
+  "data_range": [
+    "1951-01-01",
+    "2026-11-17"
+  ],
+  "n_samples": 27715,
+  "missing_rate": {
+    "lag1": 3.6e-05,
+    "lag3": 0.000108,
+    "lag7": 0.000253,
+    "month": 0.0,
+    "doy": 0.0,
+    "doy_sin": 0.0,
+    "doy_cos": 0.0
+  },
+  "best_params": {
+    "linear_regression": {
+      "fit_intercept": true
+    },
+    "random_forest": {
+      "n_estimators": 300,
+      "max_depth": 8,
+      "min_samples_leaf": 4
+    },
+    "gradient_boosting": {
+      "learning_rate": 0.03,
+      "max_iter": 400,
+      "max_leaf_nodes": 15
+    }
+  },
+  "runtime_seconds": {
+    "persistence": 0.0,
+    "linear_regression": 0.0,
+    "random_forest": 0.87,
+    "gradient_boosting": 0.44
+  },
+  "segment_thresholds": {
+    "source": "训练段 y 的 33%/67% 分位数",
+    "low_le": 19.2,
+    "high_ge": 27.2
+  },
+  "next_day_demo": {
+    "target_date": "2026-11-18",
+    "predictions": {
+      "persistence": 20.8,
+      "linear_regression": 20.14,
+      "random_forest": 20.0,
+      "gradient_boosting": 19.77
+    },
+    "official_forecast": 15.7,
+    "note": "模型用截至数据截止日的全部历史重拟合，预测首个未知日；仅为演示，不参与测试集评分"
+  },
+  "validation_metrics": [
+    {
+      "split": "validation",
+      "model": "persistence",
+      "n": 4157,
+      "MAE": 1.8752225162376712,
+      "RMSE": 2.6022487083576666,
+      "Bias": -0.0035843156122203567
+    },
+    {
+      "split": "validation",
+      "model": "linear_regression",
+      "n": 4157,
+      "MAE": 1.8871207715155758,
+      "RMSE": 2.453297546347509,
+      "Bias": -0.27171731495587154
+    },
+    {
+      "split": "validation",
+      "model": "random_forest",
+      "n": 4157,
+      "MAE": 1.860501191644041,
+      "RMSE": 2.4198921262953337,
+      "Bias": -0.26623459971683133
+    },
+    {
+      "split": "validation",
+      "model": "gradient_boosting",
+      "n": 4157,
+      "MAE": 1.876182001292332,
+      "RMSE": 2.4289968068570293,
+      "Bias": -0.29934622301764807
+    }
+  ],
+  "test_metrics": [
+    {
+      "split": "test",
+      "model": "persistence",
+      "n": 4158,
+      "MAE": 1.9167388167388169,
+      "RMSE": 2.6651790583710153,
+      "Bias": 0.0028379028379028337
+    },
+    {
+      "split": "test",
+      "model": "linear_regression",
+      "n": 4158,
+      "MAE": 1.919870809736849,
+      "RMSE": 2.514110226221974,
+      "Bias": -0.30387073610181603
+    },
+    {
+      "split": "test",
+      "model": "random_forest",
+      "n": 4158,
+      "MAE": 1.8931377409861314,
+      "RMSE": 2.495742884091722,
+      "Bias": -0.30385191896369534
+    },
+    {
+      "split": "test",
+      "model": "gradient_boosting",
+      "n": 4158,
+      "MAE": 1.9051844571228707,
+      "RMSE": 2.4951350697249643,
+      "Bias": -0.3399376406526186
+    }
+  ],
+  "total_seconds": 17.57
+}
